@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Book Finder Nextjs
 
 ## Getting Started
 
@@ -13,6 +13,7 @@ docker compose -f local.yaml up --build
 ```
 
 This will automatically:
+
 - Start a PostgreSQL database
 - Run Prisma migrations
 - Start the Next.js dev server
@@ -34,15 +35,41 @@ The app works without a Google Books API key but may hit rate limits under heavy
 
 ---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Run without Docker
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Requirements: Node.js 20+, a running PostgreSQL instance.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. Clone and install dependencies:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```bash
+git clone <repo-url>
+cd book-finder-nextjs
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Create a `.env` file in the project root:
+
+```env
+DATABASE_URL=postgresql://<user>:<password>@localhost:5432/<dbname>
+GOOGLE_BOOKS_KEY=your_google_books_api_key  # optional
+```
+
+3. Run Prisma migrations and generate the client:
+
+```bash
+npx prisma migrate deploy
+npx prisma generate
+```
+
+4. Start the dev server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+---
 
 ## Learn More
 
