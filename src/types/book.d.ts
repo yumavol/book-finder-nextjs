@@ -49,3 +49,11 @@ declare interface WishlistItem {
     createdAt: string;
   };
 }
+
+declare type BookCardProps = {
+  bookId: string;
+  thumbnail: string;
+  authors: string[];
+  title: string;
+  rating: number;
+};

@@ -213,13 +213,6 @@ function MyWishlistModal({ showModal, setShowModal }: { showModal: boolean; setS
   );
 }
 
-type BookCardProps = {
-  bookId: string;
-  thumbnail: string;
-  authors: string[];
-  title: string;
-  rating: number;
-};
 
 function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: number; isWishlist?: boolean }) {
   const queryClient = useQueryClient();
