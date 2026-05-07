@@ -291,11 +291,11 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
                 })
               }
               className={cn(
-                'btn btn-xs btn-square group btn-ghost text-red-800 hover:bg-transparent border-none',
+                'btn btn-xs btn-square group btn-ghost text-red-700 hover:text-red-800 hover:bg-transparent border-none',
                 addWishlistMutation.isPending && 'animate-pulse',
               )}
             >
-              <Heart className="group-hover:fill-red-700 size-5 group-disabled:fill-red-700" />
+              <Heart className="size-5 group-disabled:fill-red-200 group-hover:fill-red-200" />
             </button>
           )}
           {isWishlist && (

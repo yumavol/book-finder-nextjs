@@ -1,4 +1,4 @@
-import { Flip, ToastContainer as ReactToastify } from 'react-toastify';
+import { Slide, ToastContainer as ReactToastify } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useSyncExternalStore } from 'react';
 
@@ -20,14 +20,14 @@ const PortalToast = () =>
     <ReactToastify
       position="bottom-right"
       theme="dark"
-      autoClose={5000}
+      autoClose={3000}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick={false}
       rtl={false}
       pauseOnFocusLoss
       draggable
-      transition={Flip}
+      transition={Slide}
       toastStyle={{
         padding: '0.8rem',
         fontFamily: 'var(--font-sans)',
