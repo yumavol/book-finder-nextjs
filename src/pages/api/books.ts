@@ -17,7 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   url.searchParams.set('q', String(q));
   url.searchParams.set('startIndex', String(startIndex));
   url.searchParams.set('maxResults', String(clampedMaxResults));
-  // url.searchParams.set('key', process.env.GOOGLE_BOOKS_KEY ?? '');
+  if (process.env.GOOGLE_BOOKS_KEY) {
+    url.searchParams.set('key', process.env.GOOGLE_BOOKS_KEY);
+  }
 
   const response = await fetch(url.toString(), {
     next: { revalidate: 60 * 60 }, // 60 min

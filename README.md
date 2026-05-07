@@ -2,17 +2,37 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Run with Docker (recommended)
+
+Requirements: [Docker](https://www.docker.com/products/docker-desktop) installed.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url>
+cd book-finder-nextjs
+docker compose -f local.yaml up --build
 ```
+
+This will automatically:
+- Start a PostgreSQL database
+- Run Prisma migrations
+- Start the Next.js dev server
+
+Open [http://localhost:3000](http://localhost:3000) to see the app.
+pgAdmin is available at [http://localhost:5050](http://localhost:5050) (email: `admin@admin.com`, password: `admin`).
+
+> After the first build, you can use `docker compose -f local.yaml up` (without `--build`) unless `Dockerfile.local` or `package.json` changed.
+
+### Environment Variables (optional)
+
+Create a `.env` file in the project root:
+
+```env
+GOOGLE_BOOKS_KEY=your_google_books_api_key
+```
+
+The app works without a Google Books API key but may hit rate limits under heavy use.
+
+---
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
