@@ -113,7 +113,7 @@ export default function Home() {
               />
             )}
             {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <BookCardSkeleton key={i} />
                 ))}
@@ -133,7 +133,7 @@ export default function Home() {
                 }
                 endMessage={books.length > 0 && <p className="text-center text-gray-400 text-sm py-8">No more books to load.</p>}
               >
-                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
                   {books.map((book, index) => (
                     <BookCard
                       isWishlist={!!wishlist?.find((w) => w.bookId === book.id)}
