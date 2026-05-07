@@ -261,7 +261,7 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
             width={1000}
             height={1000}
             loading="eager"
-            className="object-contain w-full h-full"
+            className="object-contain w-full h-full drop-shadow-md "
             unoptimized
           />
         ) : (
