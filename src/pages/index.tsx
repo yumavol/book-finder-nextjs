@@ -318,7 +318,6 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
         <p title={displayAuthors} className="text-xs mb-2 text-gray-500 line-clamp-1">
           {displayAuthors}
         </p>
-        <p className="text-xs mb-2 text-gray-500 line-clamp-1">{book.bookId}</p>
         <div className="">
           <h2 title={book.title} className="mb-2 text-sm line-clamp-3 font-semibold leading-tight">
             {book.title}
