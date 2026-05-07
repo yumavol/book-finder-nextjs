@@ -34,3 +34,18 @@ declare interface BooksParams {
   startIndex?: number;
   maxResults?: number;
 }
+
+declare interface WishlistItem {
+  id: number;
+  userId: string;
+  bookId: string;
+  createdAt: string;
+  book: {
+    bookId: string;
+    title: string;
+    authors: string[];
+    thumbnail: string | null;
+    rating: number | null;
+    createdAt: string;
+  };
+}

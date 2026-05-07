@@ -1,12 +1,18 @@
-import { Heart, Search, Image as ImageIcon, Loader2, Loader } from 'lucide-react';
+import { Heart, Search, Image as ImageIcon, Loader } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { cn } from '@/helper';
+import { alertToast, cn } from '@/helper';
 import StarRatings from 'react-star-ratings';
 import Link from 'next/link';
-import { useBooks } from '@/hooks/useBooks';
+import { useBooks } from '@/hooks/use-books';
+import { useWishlist } from '@/hooks/use-wishlist';
+import { v4 as uuidv4 } from 'uuid';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { httpPost, default as axios } from '@/helper/axios';
+
+const LS_KEY_USER = 'user_id_book_self';
 
 export default function Home() {
   const router = useRouter();
@@ -18,9 +24,11 @@ export default function Home() {
   useEffect(() => {
     if (!router.isReady) return;
     setSearch(queryParam || '');
-  }, [queryParam]);
+  }, [queryParam, router]);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useBooks({ q: queryParam });
+  const { data: wishlist } = useWishlist();
+
   const books = data?.pages.flatMap((page) => page.items ?? []) ?? [];
 
   function handleSearch() {
@@ -102,10 +110,12 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
                   {books.map((book, index) => (
                     <BookCard
+                      isWishlist={!!wishlist?.find((w) => w.bookId === book.id)}
                       key={book.id}
                       book={{
+                        bookId: book.id,
                         thumbnail: book.volumeInfo.imageLinks?.thumbnail ?? '',
-                        authors: book.volumeInfo.authors?.join(', ') ?? 'Unknown',
+                        authors: book.volumeInfo.authors || [],
                         title: book.volumeInfo.title,
                         rating: book.volumeInfo.averageRating ?? 0,
                       }}
@@ -123,13 +133,43 @@ export default function Home() {
 }
 
 type BookCardProps = {
+  bookId: string;
   thumbnail: string;
-  authors: string;
+  authors: string[];
   title: string;
   rating: number;
 };
 
-function BookCard({ book }: { book: BookCardProps; index: number }) {
+function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: number; isWishlist?: boolean }) {
+  const queryClient = useQueryClient();
+
+  const addWishlistMutation = useMutation({
+    mutationFn: async (book: { bookId: string; title: string; authors: string[]; thumbnail: string; rating: number }) => {
+      let userId = localStorage.getItem(LS_KEY_USER);
+      if (!userId) {
+        userId = uuidv4();
+        localStorage.setItem(LS_KEY_USER, userId);
+      }
+      return await httpPost('/api/wishlist', { userId, ...book });
+    },
+    onSuccess: () => {
+      alertToast('success', 'Success add to wishlist');
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+    },
+  });
+
+  const deleteWishlistMutation = useMutation({
+    mutationFn: async (bookId: string) => {
+      const userId = localStorage.getItem(LS_KEY_USER);
+      return await axios.delete('/api/wishlist', { data: { userId, bookId } });
+    },
+    onSuccess: () => {
+      alertToast('success', 'Removed from wishlist');
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+    },
+  });
+
+  const displayAuthors = book.authors.join(', ') ?? 'Unknown author';
   return (
     <div>
       <figure className="bg-neutral-200 overflow-hidden w-full aspect-[3/3] py-8">
@@ -139,6 +179,7 @@ function BookCard({ book }: { book: BookCardProps; index: number }) {
             alt={book.title}
             width={1000}
             height={1000}
+            loading="eager"
             className="object-contain w-full h-full"
             unoptimized
           />
@@ -156,12 +197,41 @@ function BookCard({ book }: { book: BookCardProps; index: number }) {
           <div className="pb-1">
             <StarRatings rating={book.rating} numberOfStars={5} starDimension="1.2rem" starSpacing="" starRatedColor="#ffc02c" />
           </div>
-          <button className="btn btn-xs btn-square group btn-ghost text-red-800 hover:bg-transparent border-none">
-            <Heart className="group-hover:fill-red-700 size-5" />
-          </button>
+          {!isWishlist && (
+            <button
+              disabled={addWishlistMutation.isPending}
+              onClick={() =>
+                addWishlistMutation.mutateAsync({
+                  bookId: book.bookId,
+                  title: book.title,
+                  authors: book.authors,
+                  thumbnail: book.thumbnail,
+                  rating: book.rating,
+                })
+              }
+              className={cn(
+                'btn btn-xs btn-square group btn-ghost text-red-800 hover:bg-transparent border-none',
+                addWishlistMutation.isPending && 'animate-pulse',
+              )}
+            >
+              <Heart className="group-hover:fill-red-700 size-5 group-disabled:fill-red-700" />
+            </button>
+          )}
+          {isWishlist && (
+            <button
+              disabled={deleteWishlistMutation.isPending}
+              onClick={() => deleteWishlistMutation.mutateAsync(book.bookId)}
+              className={cn(
+                'btn btn-xs btn-square group btn-ghost text-red-800 hover:bg-transparent border-none',
+                addWishlistMutation.isPending && 'animate-pulse',
+              )}
+            >
+              <Heart className="group-hover:fill-red-800 fill-red-700 size-5" />
+            </button>
+          )}
         </div>
-        <p title={book.authors} className="text-xs mb-2 text-gray-500 line-clamp-1">
-          {book.authors}
+        <p title={displayAuthors} className="text-xs mb-2 text-gray-500 line-clamp-1">
+          {displayAuthors}
         </p>
         <div className="">
           <h2 title={book.title} className="mb-2 text-sm line-clamp-3 font-semibold leading-tight">

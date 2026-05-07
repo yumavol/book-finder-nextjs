@@ -7,7 +7,11 @@ function subscribe() {
 }
 
 export default function ToastContainer() {
-  const isClient = useSyncExternalStore(subscribe, () => true, () => false);
+  const isClient = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
   return isClient ? <PortalToast /> : null;
 }
 
@@ -24,6 +28,12 @@ const PortalToast = () =>
       pauseOnFocusLoss
       draggable
       transition={Flip}
+      toastStyle={{
+        padding: '0.8rem',
+        fontFamily: 'var(--font-sans)',
+        minHeight: '2rem',
+        fontSize: '0.85rem',
+      }}
       pauseOnHover
       aria-label="Toast notification"
       closeButton={CloseButton}
