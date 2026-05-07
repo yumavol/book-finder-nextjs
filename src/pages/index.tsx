@@ -1,4 +1,4 @@
-import { Heart, Search, Image as ImageIcon } from 'lucide-react';
+import { Heart, Search, Image as ImageIcon, Loader2, Loader } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -6,6 +6,7 @@ import { cn } from '@/helper';
 import StarRatings from 'react-star-ratings';
 import Link from 'next/link';
 import { useBooks } from '@/hooks/useBooks';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function Home() {
   const router = useRouter();
@@ -19,8 +20,8 @@ export default function Home() {
     setSearch(queryParam);
   }, [queryParam]);
 
-  const { data, isLoading } = useBooks({ q: queryParam, startIndex: 0, maxResults: 16 });
-  const books = data?.items ?? [];
+  const { data, isLoading, fetchNextPage, hasNextPage } = useBooks({ q: queryParam });
+  const books = data?.pages.flatMap((page) => page.items ?? []) ?? [];
 
   function handleSearch() {
     if (!search.trim()) return;
@@ -77,10 +78,29 @@ export default function Home() {
 
         {hasSearched && (
           <div className="mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
-              {isLoading
-                ? Array.from({ length: 8 }).map((_, i) => <BookCardSkeleton key={i} />)
-                : books.map((book, index) => (
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <BookCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : (
+              <InfiniteScroll
+                dataLength={books.length}
+                next={fetchNextPage}
+                hasMore={!!hasNextPage}
+                scrollThreshold={0.85}
+                style={{ overflow: 'visible' }}
+                loader={
+                  <div className="flex flex-col items-center max-sm:h-16 h-24 justify-center">
+                    <Loader className="text-gray-600 animate-spin" />
+                    <div className="text-sm font-semibold text-gray-400">Fetching new data..</div>
+                  </div>
+                }
+                endMessage={books.length > 0 && <p className="text-center text-gray-400 text-sm py-8">No more books to load.</p>}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
+                  {books.map((book, index) => (
                     <BookCard
                       key={book.id}
                       book={{
@@ -92,7 +112,9 @@ export default function Home() {
                       index={index}
                     />
                   ))}
-            </div>
+                </div>
+              </InfiniteScroll>
+            )}
           </div>
         )}
       </div>
