@@ -1,4 +1,4 @@
-import { Heart, Search, Image as ImageIcon, Loader } from 'lucide-react';
+import { Heart, Search, Image as ImageIcon, Loader, GlobeX, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -12,6 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { httpPost, default as axios } from '@/helper/axios';
 import Modal from '@/components/modal';
+import { AxiosError } from 'axios';
 
 const LS_KEY_USER = 'user_id_book_self';
 
@@ -29,7 +30,7 @@ export default function Home() {
     setSearch(queryParam || '');
   }, [queryParam, router]);
 
-  const { data, isLoading, fetchNextPage, hasNextPage } = useBooks({ q: queryParam });
+  const { data, isLoading, fetchNextPage, hasNextPage, refetch, error } = useBooks({ q: queryParam });
   const { data: wishlist } = useWishlist();
 
   const books = data?.pages.flatMap((page) => page.items ?? []) ?? [];
@@ -44,6 +45,20 @@ export default function Home() {
     if (e.key === 'Enter') handleSearch();
   }
 
+  // if (error instanceof AxiosError && error?.response?.data?.error) {
+  //   const { code, message } = error.response.data?.error;
+  //   return (
+  //     <section className="bg-gray-50 min-h-screen flex items-center justify-center">
+  //       <div className="text-center">
+  //         <p className="text-5xl font-bold text-gray-300 mb-2">{code}</p>
+  //         <p className="text-gray-500 mb-6">{message ?? 'Something went wrong'}</p>
+  //         <button className="btn btn-primary btn-sm" onClick={() => refetch()}>
+  //           Try again
+  //         </button>
+  //       </div>
+  //     </section>
+  //   );
+  // }
   return (
     <section className="bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto px-4">
@@ -93,6 +108,13 @@ export default function Home() {
 
         {hasSearched && (
           <div className="mt-8">
+            {error instanceof AxiosError && error?.response?.data?.error && (
+              <ErrorFetch
+                refetch={refetch}
+                code={error?.response?.data?.error?.code}
+                message={error?.response?.data?.error?.message}
+              />
+            )}
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-10">
                 {Array.from({ length: 8 }).map((_, i) => (
@@ -136,6 +158,22 @@ export default function Home() {
         )}
       </div>
       <MyWishlistModal showModal={showMyWishlist} setShowModal={setShowMyWishlist} />
+    </section>
+  );
+}
+
+function ErrorFetch({ code, message, refetch }: { code: number; message: string; refetch: () => void }) {
+  return (
+    <section className="">
+      <div className="flex flex-col items-center max-w-xs mx-auto">
+        <GlobeX className="size-14 text-gray-300" />
+        <p className="text-gray-500 pt-2 mb-3">
+          <strong>{code}</strong> {message ?? 'Something went wrong'}
+        </p>
+        <button className="btn btn-primary btn-sm" onClick={() => refetch()}>
+          <RefreshCw className="size-4" /> Try again
+        </button>
+      </div>
     </section>
   );
 }
