@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { httpGet } from '@/helper/axios';
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 16;
 
 export function useBooks(params: { q: string }) {
   return useInfiniteQuery<BooksResponse>({
