@@ -1,4 +1,4 @@
-declare interface BookItem {
+interface BookItem {
   kind: string;
   id: string;
   etag: string;
@@ -23,19 +23,19 @@ declare interface BookItem {
   };
 }
 
-declare interface BooksResponse {
+interface BooksResponse {
   kind: string;
   totalItems: number;
   items?: BookItem[];
 }
 
-declare interface BooksParams {
+interface BooksParams {
   q: string;
   startIndex?: number;
   maxResults?: number;
 }
 
-declare interface WishlistItem {
+interface WishlistItem {
   id: number;
   userId: string;
   bookId: string;
@@ -50,7 +50,7 @@ declare interface WishlistItem {
   };
 }
 
-declare type BookCardProps = {
+type BookCardProps = {
   bookId: string;
   thumbnail: string;
   authors: string[];
