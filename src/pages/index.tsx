@@ -128,7 +128,7 @@ export default function Home() {
                 loader={
                   <div className="flex flex-col items-center max-sm:h-16 h-24 justify-center">
                     <Loader className="text-gray-600 animate-spin" />
-                    <div className="text-sm font-semibold text-gray-400">Fetching new data..</div>
+                    <div className="text-sm font-semibold text-gray-400">Fetching more books...</div>
                   </div>
                 }
                 endMessage={books.length > 0 && <p className="text-center text-gray-400 text-sm py-8">No more books to load.</p>}
@@ -212,7 +212,6 @@ function MyWishlistModal({ showModal, setShowModal }: { showModal: boolean; setS
     </Modal>
   );
 }
-
 
 function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: number; isWishlist?: boolean }) {
   const queryClient = useQueryClient();
