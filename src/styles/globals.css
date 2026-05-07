@@ -1,11 +1,13 @@
 @import 'tailwindcss';
 
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default;
+}
 
 @plugin "daisyui/theme" {
-  name: 'corporate';
+  name: 'light';
   default: true;
-  prefersdark: false;
+  prefersdark: true;
   color-scheme: 'light';
   --color-base-100: oklch(100% 0 0);
   --color-base-200: oklch(93% 0 0);
@@ -40,6 +42,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #171717;
+    color-scheme: light;
+  }
 }
 
 @theme inline {
@@ -62,6 +73,10 @@
 
 @utility form-label {
   @apply block text-sm font-medium text-gray-800 mb-1;
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
