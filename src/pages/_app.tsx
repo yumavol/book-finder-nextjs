@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { QueryClient, QueryClientProvider, HydrationBoundary } from '@tanstack/react-query';
 import ToastContainer from '@/components/toast-container';
 import { Geist } from 'next/font/google';
+import { useState } from 'react';
 
 const geistSans = Geist({
   variable: '--font-sans',
@@ -11,7 +12,7 @@ const geistSans = Geist({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const queryClient = new QueryClient();
+  const [queryClient] = useState(() => new QueryClient());
   return (
     <div className={geistSans.variable}>
       <Head>
