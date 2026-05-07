@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import { ClassNameValue, twMerge } from 'tailwind-merge';
 
 export const waitAsync = (sec: number) => new Promise<void>((resolve) => setTimeout(() => resolve(), sec));
 
@@ -18,6 +19,8 @@ export const alertToast = (type: 'success' | 'error' | 'info' | 'warning', messa
       break;
   }
 };
+
+export const cn = (...classLists: ClassNameValue[]) => twMerge(classLists);
 
 export const formatMoney = (amount: number) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
