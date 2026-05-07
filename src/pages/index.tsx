@@ -17,16 +17,16 @@ export default function Home() {
 
   useEffect(() => {
     if (!router.isReady) return;
-    setSearch(queryParam);
+    setSearch(queryParam || '');
   }, [queryParam]);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useBooks({ q: queryParam });
   const books = data?.pages.flatMap((page) => page.items ?? []) ?? [];
 
   function handleSearch() {
-    if (!search.trim()) return;
+    if (!search?.trim()) return;
     setAnimateTransition(true);
-    router.push({ query: { q: search.trim() } }, undefined, { shallow: true });
+    router.push({ query: { q: search?.trim() } }, undefined, { shallow: true });
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {

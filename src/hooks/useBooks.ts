@@ -8,11 +8,18 @@ export function useBooks(params: { q: string }) {
     queryKey: ['books', params.q],
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => {
-      const response = await httpGet('/api/books', false, {
-        q: params.q,
-        startIndex: pageParam,
-        maxResults: PAGE_SIZE,
-      }).then((res) => res.data);
+      const response = await httpGet(
+        '/api/books',
+        false,
+        {
+          q: params.q,
+          startIndex: pageParam,
+          maxResults: PAGE_SIZE,
+        },
+        {
+          _hideToast: true,
+        },
+      ).then((res) => res.data);
       return response;
     },
     getNextPageParam: (lastPage, allPages) => {

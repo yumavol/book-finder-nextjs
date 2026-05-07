@@ -14,6 +14,7 @@ declare module 'axios' {
   export interface AxiosRequestConfig {
     _withAuth?: boolean;
     _retry?: boolean;
+    _hideToast?: boolean;
   }
 }
 
@@ -173,12 +174,14 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (Array.isArray(errorMsg)) {
-      errorMsg.forEach((msg) => {
-        alertToast('error', msg, msg);
-      });
-    } else {
-      alertToast('error', errorMsg, errorMsg);
+    if (!originalRequest._hideToast) {
+      if (Array.isArray(errorMsg)) {
+        errorMsg.forEach((msg) => {
+          alertToast('error', msg, msg);
+        });
+      } else {
+        alertToast('error', errorMsg, errorMsg);
+      }
     }
 
     return Promise.reject(error);
