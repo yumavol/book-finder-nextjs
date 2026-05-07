@@ -1,5 +1,36 @@
+import { Search } from 'lucide-react';
+import { useState } from 'react';
+
 export default function Home() {
-  return <div></div>;
+  const [search, setSearch] = useState('');
+  return (
+    <section className="bg-gray-100">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="max-w-xl w-full">
+            <h1 className="text-4xl font-bold text-center text-primary-800 mb-8">
+              <span>
+                <span className="text-[#4285F4]">G</span>
+                <span className="text-[#EA4335]">o</span>
+                <span className="text-[#FBBC05]">o</span>
+                <span className="text-[#4285F4]">g</span>
+                <span className="text-[#34A853]">l</span>
+                <span className="text-[#EA4335]">e</span>
+              </span>{' '}
+              Book Finder
+            </h1>
+            <div className="flex gap-2">
+              <label className="input w-full">
+                <Search className="size-5 text-gray-500" />
+                <input placeholder="Cari sebuah buku..." />
+              </label>
+              <button className="btn btn-primary">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 const exampleResponse = {

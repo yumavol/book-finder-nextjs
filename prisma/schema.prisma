@@ -12,17 +12,19 @@ datasource db {
   provider = "postgresql"
 }
 
+model BookSnapShoot {
+  bookId    String     @id
+  title     String
+  authors   String[]
+  thumbnail String?
+  rating    Float?
+  createdAt DateTime   @default(now())
+  wishlist  Wishlist[]
+}
+
 model Wishlist {
-  id          Int       @id @default(autoincrement())  
-  userId      String 
-  bookId      String 
-  
-  title       String
-  authors     String[]
-  thumbnail   String?
-  rating      Float?
-
-  createdAt   DateTime  @default(now())
-
-  @@unique([userId, bookId])
+  id        Int           @id @default(autoincrement())
+  bookId    String
+  createdAt DateTime      @default(now())
+  book      BookSnapShoot @relation(fields: [bookId], references: [bookId])
 }
