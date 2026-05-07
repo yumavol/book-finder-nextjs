@@ -52,7 +52,7 @@ export default function Home() {
   }
 
   return (
-    <section className="bg-gray-50 min-h-screen">
+    <section className="bg-gray-50 min-h-screen overflow-x-hidden">
       {userId && (
         <div className="absolute top-0 right-0 px-2 py-1 bg-gray-200 text-gray-500 text-xs flex gap-1 opacity-25 hover:opacity-100 max-w-full">
           <UserCircle className="size-4" /> <span className="truncate flex-1">{userId}</span>
@@ -179,7 +179,13 @@ function MyWishlistModal({ showModal, setShowModal }: { showModal: boolean; setS
   const { data: wishlist, isLoading } = useWishlist();
 
   return (
-    <Modal size="4xl" title="My Wishlist" showModal={showModal} setShowModal={setShowModal} bodyClassName="pt-1">
+    <Modal
+      size="4xl"
+      title="My Wishlist"
+      showModal={showModal}
+      setShowModal={setShowModal}
+      bodyClassName="pt-1 max-w-full overflow-x-hidden"
+    >
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (

@@ -17,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <div className={geistSans.variable}>
       <Head>
         <title>Book Finder</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover" />
         <link rel="icon" href="/images/favicon.png" type="image/png" />
       </Head>
       <QueryClientProvider client={queryClient}>
