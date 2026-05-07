@@ -1,4 +1,4 @@
-import { Heart, Search, Image as ImageIcon, Loader, GlobeX, RefreshCw } from 'lucide-react';
+import { Heart, Search, Image as ImageIcon, Loader, GlobeX, RefreshCw, UserCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -20,6 +20,12 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [animateTransition, setAnimateTransition] = useState(false);
   const [showMyWishlist, setShowMyWishlist] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const id = localStorage.getItem(LS_KEY_USER);
+    setUserId(id);
+  }, []);
 
   const router = useRouter();
   const queryParam = router.query.q as string;
@@ -45,22 +51,13 @@ export default function Home() {
     if (e.key === 'Enter') handleSearch();
   }
 
-  // if (error instanceof AxiosError && error?.response?.data?.error) {
-  //   const { code, message } = error.response.data?.error;
-  //   return (
-  //     <section className="bg-gray-50 min-h-screen flex items-center justify-center">
-  //       <div className="text-center">
-  //         <p className="text-5xl font-bold text-gray-300 mb-2">{code}</p>
-  //         <p className="text-gray-500 mb-6">{message ?? 'Something went wrong'}</p>
-  //         <button className="btn btn-primary btn-sm" onClick={() => refetch()}>
-  //           Try again
-  //         </button>
-  //       </div>
-  //     </section>
-  //   );
-  // }
   return (
     <section className="bg-gray-50 min-h-screen">
+      {userId && (
+        <div className="absolute top-0 right-0 px-2 py-1 bg-gray-200 text-gray-500 text-xs flex gap-1 opacity-25 hover:opacity-100">
+          <UserCircle className="size-4" /> {userId}
+        </div>
+      )}
       <div className="max-w-6xl mx-auto px-4">
         <div
           className={cn(
