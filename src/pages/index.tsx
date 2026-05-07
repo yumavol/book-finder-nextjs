@@ -179,7 +179,7 @@ function MyWishlistModal({ showModal, setShowModal }: { showModal: boolean; setS
   const { data: wishlist, isLoading } = useWishlist();
 
   return (
-    <Modal size="4xl" title="My Wishlist" showModal={showModal} setShowModal={setShowModal}>
+    <Modal size="4xl" title="My Wishlist" showModal={showModal} setShowModal={setShowModal} bodyClassName="pt-1">
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -253,7 +253,7 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
   const displayAuthors = book.authors.join(', ') || 'Unknown author';
   return (
     <div>
-      <figure className="bg-neutral-200 overflow-hidden w-full aspect-[3/3] py-8">
+      <figure className="bg-neutral-200 rounded overflow-hidden w-full aspect-[3/3] py-8">
         {book.thumbnail ? (
           <Image
             src={book.thumbnail}
@@ -275,40 +275,44 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
       </figure>
       <div className="py-2 px-2">
         <div className="mb-1 flex items-center justify-between">
-          <div className="pb-1">
+          <div className="tooltip pb-1" data-tip={`${book.rating} stars out of 5`}>
             <StarRatings rating={book.rating} numberOfStars={5} starDimension="1.2rem" starSpacing="" starRatedColor="#ffc02c" />
           </div>
           {!isWishlist && (
-            <button
-              disabled={addWishlistMutation.isPending}
-              onClick={() =>
-                addWishlistMutation.mutateAsync({
-                  bookId: book.bookId,
-                  title: book.title,
-                  authors: book.authors,
-                  thumbnail: book.thumbnail,
-                  rating: book.rating,
-                })
-              }
-              className={cn(
-                'btn btn-xs btn-square group btn-ghost text-red-700 hover:text-red-800 hover:bg-transparent border-none',
-                addWishlistMutation.isPending && 'animate-pulse',
-              )}
-            >
-              <Heart className="size-5 group-disabled:fill-red-200 group-hover:fill-red-200" />
-            </button>
+            <div className="tooltip" data-tip="Add to wishlist">
+              <button
+                disabled={addWishlistMutation.isPending}
+                onClick={() =>
+                  addWishlistMutation.mutateAsync({
+                    bookId: book.bookId,
+                    title: book.title,
+                    authors: book.authors,
+                    thumbnail: book.thumbnail,
+                    rating: book.rating,
+                  })
+                }
+                className={cn(
+                  'btn btn-xs btn-square group btn-ghost text-red-700 hover:text-red-800 hover:bg-transparent border-none',
+                  addWishlistMutation.isPending && 'animate-pulse',
+                )}
+              >
+                <Heart className="size-5 group-disabled:fill-red-200 group-hover:fill-red-200" />
+              </button>
+            </div>
           )}
           {isWishlist && (
-            <button
-              disabled={deleteWishlistMutation.isPending}
-              onClick={() => deleteWishlistMutation.mutateAsync(book.bookId)}
-              className={cn(
-                'btn btn-xs btn-square group btn-ghost text-red-800 hover:bg-transparent border-none',
-                addWishlistMutation.isPending && 'animate-pulse',
-              )}
-            >
-              <Heart className="group-hover:fill-red-800 fill-red-700 size-5" />
-            </button>
+            <div className="tooltip" data-tip="Remove from wishlist">
+              <button
+                disabled={deleteWishlistMutation.isPending}
+                onClick={() => deleteWishlistMutation.mutateAsync(book.bookId)}
+                className={cn(
+                  'btn btn-xs btn-square group btn-ghost text-red-800 hover:bg-transparent border-none',
+                  addWishlistMutation.isPending && 'animate-pulse',
+                )}
+              >
+                <Heart className="group-hover:fill-red-800 fill-red-700 size-5" />
+              </button>
+            </div>
           )}
         </div>
         <p title={displayAuthors} className="text-xs mb-2 text-gray-500 line-clamp-1">
