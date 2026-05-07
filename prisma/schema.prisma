@@ -24,7 +24,10 @@ model BookSnapShoot {
 
 model Wishlist {
   id        Int           @id @default(autoincrement())
+  userId    String        @db.Uuid
   bookId    String
   createdAt DateTime      @default(now())
   book      BookSnapShoot @relation(fields: [bookId], references: [bookId])
+
+  @@unique([userId, bookId])
 }
