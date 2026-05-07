@@ -80,3 +80,7 @@ body {
 .select:focus-within {
   @apply not-[.input-error]:outline-sky-600/30 not-[.input-error]:border-sky-600;
 }
+
+.Toastify__toast-container {
+  @apply max-sm:max-w-full!;
+}

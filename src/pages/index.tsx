@@ -54,21 +54,21 @@ export default function Home() {
   return (
     <section className="bg-gray-50 min-h-screen">
       {userId && (
-        <div className="absolute top-0 right-0 px-2 py-1 bg-gray-200 text-gray-500 text-xs flex gap-1 opacity-25 hover:opacity-100">
-          <UserCircle className="size-4" /> {userId}
+        <div className="absolute top-0 right-0 px-2 py-1 bg-gray-200 text-gray-500 text-xs flex gap-1 opacity-25 hover:opacity-100 max-w-full">
+          <UserCircle className="size-4" /> <span className="truncate flex-1">{userId}</span>
         </div>
       )}
       <div className="max-w-6xl mx-auto px-4">
         <div
           className={cn(
-            'overflow-hidden flex items-center justify-center',
+            'flex items-center justify-center',
             animateTransition && 'transition-all duration-500 ease-in-out',
             hasSearched ? 'min-h-0 pt-8 pb-2' : 'min-h-screen',
           )}
         >
           <div className="w-full transition-all duration-500 max-w-xl">
             <Link href="/">
-              <h1 className="font-bold text-center text-xl sm:text-3xl md:text-4xl text-primary-800 transition mb-4">
+              <h1 className="font-bold text-center text-2xl sm:text-3xl md:text-4xl text-primary-800 transition mb-4">
                 <span>
                   <span className="text-[#4285F4]">G</span>
                   <span className="text-[#EA4335]">o</span>
