@@ -11,15 +11,18 @@ import { v4 as uuidv4 } from 'uuid';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { httpPost, default as axios } from '@/helper/axios';
+import Modal from '@/components/modal';
 
 const LS_KEY_USER = 'user_id_book_self';
 
 export default function Home() {
+  const [search, setSearch] = useState('');
+  const [animateTransition, setAnimateTransition] = useState(false);
+  const [showMyWishlist, setShowMyWishlist] = useState(false);
+
   const router = useRouter();
   const queryParam = router.query.q as string;
-  const [search, setSearch] = useState('');
   const hasSearched = !!queryParam;
-  const [animateTransition, setAnimateTransition] = useState(false);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -53,7 +56,7 @@ export default function Home() {
         >
           <div className="w-full transition-all duration-500 max-w-xl">
             <Link href="/">
-              <h1 className="font-bold text-center text-xl sm:text-3xl md:text-4xl text-primary-800 transition mb-6">
+              <h1 className="font-bold text-center text-xl sm:text-3xl md:text-4xl text-primary-800 transition mb-4">
                 <span>
                   <span className="text-[#4285F4]">G</span>
                   <span className="text-[#EA4335]">o</span>
@@ -65,8 +68,12 @@ export default function Home() {
                 Book Finder
               </h1>
             </Link>
-
-            <div className={cn('flex gap-2', hasSearched && 'max-w-2xl mx-auto')}>
+            <div className="flex justify-center mb-6">
+              <button onClick={() => setShowMyWishlist(true)} className="btn btn-xs">
+                <Heart className="size-3" /> My Wishlist
+              </button>
+            </div>
+            <div className="flex gap-2">
               <label className="input w-full">
                 <Search className="size-5 text-gray-500 max-sm:hidden" />
                 <input
@@ -128,7 +135,46 @@ export default function Home() {
           </div>
         )}
       </div>
+      <MyWishlistModal showModal={showMyWishlist} setShowModal={setShowMyWishlist} />
     </section>
+  );
+}
+
+function MyWishlistModal({ showModal, setShowModal }: { showModal: boolean; setShowModal: (show: boolean) => void }) {
+  const { data: wishlist, isLoading } = useWishlist();
+
+  return (
+    <Modal size="4xl" title="My Wishlist" showModal={showModal} setShowModal={setShowModal}>
+      {isLoading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <BookCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : !wishlist?.length ? (
+        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+          <Heart className="size-10 mb-2" />
+          <p className="font-semibold text-sm">Your wishlist is empty</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {wishlist.map((item) => (
+            <BookCard
+              key={item.bookId}
+              isWishlist
+              index={0}
+              book={{
+                bookId: item.book.bookId,
+                title: item.book.title,
+                authors: item.book.authors,
+                thumbnail: item.book.thumbnail ?? '',
+                rating: item.book.rating ?? 0,
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </Modal>
   );
 }
 
@@ -153,7 +199,7 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
       return await httpPost('/api/wishlist', { userId, ...book });
     },
     onSuccess: () => {
-      alertToast('success', 'Success add to wishlist');
+      alertToast('success', 'Added to wishlist');
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
     },
   });
@@ -169,7 +215,7 @@ function BookCard({ book, isWishlist = false }: { book: BookCardProps; index: nu
     },
   });
 
-  const displayAuthors = book.authors.join(', ') ?? 'Unknown author';
+  const displayAuthors = book.authors.join(', ') || 'Unknown author';
   return (
     <div>
       <figure className="bg-neutral-200 overflow-hidden w-full aspect-[3/3] py-8">
