@@ -50,10 +50,10 @@ interface WishlistItem {
   };
 }
 
-type BookCardProps = {
+interface BookCardProps {
   bookId: string;
   thumbnail: string;
   authors: string[];
   title: string;
   rating: number;
-};
+}
